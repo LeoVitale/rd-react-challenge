@@ -1,0 +1,17 @@
+.book {
+  .md-card-title--title-block {
+    overflow: hidden;
+    .md-card-title--title {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+  .md-media {
+    padding-bottom: 140%;
+    background-color: #f0f0f0;
+    img {
+      height: auto;
+    }
+  }
+}
