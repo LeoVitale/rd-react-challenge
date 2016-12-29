@@ -3,14 +3,10 @@
   "version": "1.0.0",
   "description": "Describe rd-books here",
   "private": true,
-  "scripts": {
-    "build": "nwb build-react-app",
-    "clean": "nwb clean-app",
-    "start": "nwb serve-react-app",
-    "test": "nwb test-react",
-    "test:coverage": "nwb test-react --coverage",
-    "test:watch": "nwb test-react --server"
-  },
+  "author": "",
+  "license": "MIT",
+  "repository": "",
+  "homepage": "https://leovitale.github.io/rd-react-challenge/",
   "dependencies": {
     "axios": "^0.15.3",
     "lodash": "^4.17.3",
@@ -24,10 +20,14 @@
     "webfontloader": "^1.6.27"
   },
   "devDependencies": {
-    "nwb": "0.13.x",
-    "nwb-sass": "^0.6.0"
+    "custom-react-scripts": "0.0.21",
+    "gh-pages": "^0.12.0"
   },
-  "author": "",
-  "license": "MIT",
-  "repository": ""
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject",
+    "deploy": "npm run build&&gh-pages -d build"
+  }
 }
