@@ -1,4 +1,4 @@
-import React, {Component, PropTypes} from 'react';
+import React, {PureComponent, PropTypes} from 'react';
 import Card from 'react-md/lib/Cards/Card';
 import CardTitle from 'react-md/lib/Cards/CardTitle';
 import CardText from 'react-md/lib/Cards/CardText';
@@ -8,17 +8,29 @@ import Checkbox from 'react-md/lib/SelectionControls/Checkbox';
 
 import './book.scss';
 
-class Book extends Component {
+class Book extends PureComponent {
   constructor(props) {
     super(props);
 
+  }
+
+  checkedFavorite = (checked) => {
+    const book = {
+      id: this.props.book.id,
+      title: this.props.book.volumeInfo.title
+    }
+    if(checked) {
+      this.props.addFavorites(book);
+    }else{
+      this.props.removeFavorites(book);
+    }
   }
 
   render() {
     
     const {id, volumeInfo} = this.props.book;
     const image = `https://books.google.com/books/content/images/frontcover/${id}?fife=w350-rw`;
-
+    console.log(this.props.favorite);
     return (
       <div key={id} className="md-cell md-cell--2-desktop md-cell--2-tablet md-cell--12-phone">
         <Card className="book md-block-centered">
@@ -33,11 +45,16 @@ class Book extends Component {
                   checkedIconChildren="favorite"
                   uncheckedIconChildren="favorite_border"
                   value="favorite"
+                  checked={this.props.favorite}
+                  onChange={this.checkedFavorite}
                   />
             </MediaOverlay>
             
           </Media>
           <CardTitle title={volumeInfo.title} subtitle={volumeInfo.title} />
+          <CardText>
+            <p>Texto</p>
+          </CardText>
 
         </Card>
       </div>

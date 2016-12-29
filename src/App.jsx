@@ -7,6 +7,7 @@ import Toolbar from 'react-md/lib/Toolbars';
 import Button from 'react-md/lib/Buttons/Button';
 import TextField from 'react-md/lib/TextFields';
 import FontIcon from 'react-md/lib/FontIcons';
+import base from './api/base';
 
 WebFontLoader.load({
   google: {
@@ -23,9 +24,19 @@ class App extends Component {
   state = {
     totalItems: 0,
     books: [],
-    title: 'Resultados Digitais'
+    title: 'Resultados Digitais',
+    favorites: {}
   };
 
+  
+  componentWillMount() {
+    this.ref = base.syncState('favorites', 
+    {
+      context: this,
+      state: 'favorites'
+    });
+  }
+  
   componentDidMount() {
     api.getBooks('tolkien').then((response) => {
       if (response.data) {
@@ -34,10 +45,32 @@ class App extends Component {
     });
   }
 
+  addFavorites = (book) => {
+
+    const favorites = {...this.state.favorites};
+    favorites[book.id] = book;
+    this.setState({ favorites });
+  }
+
+  removeFavorites = (book) => {
+    
+    const favorites = {...this.state.favorites };
+    favorites[book.id] = null;
+
+    this.setState({ favorites });
+    
+  }
+
   renderBooks = () => {
     if (this.state.books.length > 0) {
       return (
-        <BookList totalItems={this.state.totalItems} title={this.state.title} books={this.state.books} />
+        <BookList 
+        totalItems={this.state.totalItems} 
+        title={this.state.title} 
+        books={this.state.books}
+        favoriteList={this.state.favorites}
+        addFavorites={this.addFavorites}
+        removeFavorites={this.removeFavorites}/>
       )
     }
     return (
@@ -60,15 +93,14 @@ class App extends Component {
           this.setState({ totalItems: response.data.totalItems, books: response.data.items, title: value });
         }
       }).catch(function (error) {
-        console.log('fodeo');
-        //return error;
+        return error;
       });
     }
   }
 
   render() {
     let nav = <Button icon>menu</Button>;
-    let title = 'RD Search Books';
+    let title = 'Search Books';
     let actions = <Button onClick={this.newSearch} icon>search</Button>;
     let children = (
       <TextField
@@ -88,8 +120,6 @@ class App extends Component {
           title={title}>
           {children}
         </Toolbar>
-
-
 
         {this.renderBooks()}
 

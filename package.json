@@ -13,7 +13,9 @@
   },
   "dependencies": {
     "axios": "^0.15.3",
+    "lodash": "^4.17.3",
     "normalize.css": "^5.0.0",
+    "re-base": "^2.5.2",
     "react": "^15.4.1",
     "react-addons-css-transition-group": "^15.4.1",
     "react-addons-transition-group": "^15.4.1",
