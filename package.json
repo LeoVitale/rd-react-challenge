@@ -1,0 +1,33 @@
+{
+  "name": "rd-books",
+  "version": "1.0.0",
+  "description": "Describe rd-books here",
+  "private": true,
+  "scripts": {
+    "build": "nwb build-react-app",
+    "clean": "nwb clean-app",
+    "start": "nwb serve-react-app",
+    "test": "nwb test-react",
+    "test:coverage": "nwb test-react --coverage",
+    "test:watch": "nwb test-react --server"
+  },
+  "dependencies": {
+    "axios": "^0.15.3",
+    "lodash": "^4.17.3",
+    "normalize.css": "^5.0.0",
+    "re-base": "^2.5.2",
+    "react": "^15.4.1",
+    "react-addons-css-transition-group": "^15.4.1",
+    "react-addons-transition-group": "^15.4.1",
+    "react-dom": "^15.4.1",
+    "react-md": "^1.0.0",
+    "webfontloader": "^1.6.27"
+  },
+  "devDependencies": {
+    "nwb": "0.13.x",
+    "nwb-sass": "^0.6.0"
+  },
+  "author": "",
+  "license": "MIT",
+  "repository": ""
+}
