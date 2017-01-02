@@ -52,6 +52,7 @@ class Book extends PureComponent {
             
           </Media>
           <CardTitle title={volumeInfo.title} subtitle={volumeInfo.title} />
+          <Button className="invisible-btn" flat onClick={() => this.props.getDetail(id)} />
 
         </Card>
       </div>

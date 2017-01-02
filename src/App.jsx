@@ -46,19 +46,15 @@ class App extends Component {
   }
 
   addFavorites = (book) => {
-
     const favorites = {...this.state.favorites};
     favorites[book.id] = book;
     this.setState({ favorites });
   }
 
   removeFavorites = (book) => {
-    
     const favorites = {...this.state.favorites };
     favorites[book.id] = null;
-
     this.setState({ favorites });
-    
   }
 
   renderBooks = () => {
@@ -70,7 +66,8 @@ class App extends Component {
         books={this.state.books}
         favoriteList={this.state.favorites}
         addFavorites={this.addFavorites}
-        removeFavorites={this.removeFavorites}/>
+        removeFavorites={this.removeFavorites}
+        getDetail={this.getDetail}/>
       )
     }
     return (
@@ -78,17 +75,10 @@ class App extends Component {
     )
   }
 
-  newSearch = () => {
-    api.getBooks('harry potter').then((response) => {
-      this.setState({ books: response.data.items });
-    });
-  }
-
   textSearch = (event) => {
     if (event.keyCode === 13) {
       let value = event.target.value;
-      api.getBooks(event.target.value).then((response) => {
-        console.log(response);
+      api.getBooks(value).then((response) => {
         if (response.data) {
           this.setState({ totalItems: response.data.totalItems, books: response.data.items, title: value });
         }
@@ -98,10 +88,21 @@ class App extends Component {
     }
   }
 
+  getDetail = (id) => {
+    console.log(id);
+    api.getDetailBook(id).then((response) => {
+      if (response.data) {
+        console.log(response.data);
+      }
+    }).catch(function (error) {
+      return error;
+    });
+  }
+
   render() {
     let nav = <Button icon>menu</Button>;
     let title = 'Search Books';
-    let actions = <Button onClick={this.newSearch} icon>search</Button>;
+    let actions = <Button icon>search</Button>;
     let children = (
       <TextField
         className="search-box md-title--toolbar"
@@ -121,7 +122,6 @@ class App extends Component {
           {children}
         </Toolbar>
         
-
         {this.renderBooks()}
 
       </div>

@@ -1,4 +1,13 @@
 .book {
+  &.md-card{
+    position: relative;
+    .invisible-btn{
+      position: absolute;
+      top: 0;
+      width: 100%;
+      height: 100%;
+    }
+  }
   .md-card-title--title-block {
     overflow: hidden;
     .md-card-title--title {

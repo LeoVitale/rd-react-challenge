@@ -18,7 +18,9 @@ class BookList extends PureComponent {
       index={index} 
       favorite={favorite} 
       addFavorites={this.props.addFavorites}
-      removeFavorites={this.props.removeFavorites} />
+      removeFavorites={this.props.removeFavorites}
+      getDetail={this.props.getDetail}
+      />
     )
   }
 
