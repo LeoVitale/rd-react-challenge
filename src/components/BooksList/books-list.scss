@@ -1,0 +1,16 @@
+.books-list {
+  margin-top: 60px;
+  width: 90%;
+  .term-results-container {
+    .term-results {
+      text-transform: capitalize;
+      margin-bottom: 0;
+    }
+    p{
+      margin-bottom: 0;
+    }
+  }
+  >.md-grid {
+    width: 100%;
+  }
+}

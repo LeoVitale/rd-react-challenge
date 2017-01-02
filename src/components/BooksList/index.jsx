@@ -1,9 +1,10 @@
 import React, { PureComponent, PropTypes } from 'react';
 import Book from '../Book';
+import './books-list.scss';
 
 const favoriteList = ['XsJ645BbokAC', 'M7IQ4jTC0esC'];
 
-class BookList extends PureComponent {
+class BooksList extends PureComponent {
   constructor(props) {
     super(props);
   }
@@ -27,10 +28,14 @@ class BookList extends PureComponent {
   render() {
     const {books} = this.props;
     return (
-      <div className="result-container md-grid">
-
-        <h2>{this.props.title}</h2>
-        <h4>{this.props.totalItems} resultados</h4>
+      <div className="books-list md-grid">
+        <div className="md-grid">
+          <div className="md-cell term-results-container">
+            <h2 className="term-results">{this.props.title}</h2>
+            <p>{this.props.totalItems} resultados</p>
+          </div>
+        </div>
+        
         <div className="md-grid">
           {books.map((book, index) => {
             return this.renderBookItem(book, index);
@@ -41,8 +46,4 @@ class BookList extends PureComponent {
   }
 }
 
-BookList.propTypes = {
-
-};
-
-export default BookList;
+export default BooksList;

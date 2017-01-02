@@ -1,7 +1,6 @@
 import React, {PureComponent, PropTypes} from 'react';
 import Card from 'react-md/lib/Cards/Card';
 import CardTitle from 'react-md/lib/Cards/CardTitle';
-import CardText from 'react-md/lib/Cards/CardText';
 import Media, { MediaOverlay } from 'react-md/lib/Media';
 import Button from 'react-md/lib/Buttons';
 import Checkbox from 'react-md/lib/SelectionControls/Checkbox';
@@ -59,9 +58,5 @@ class Book extends PureComponent {
     );
   }
 }
-
-Book.propTypes = {
-
-};
 
 export default Book;

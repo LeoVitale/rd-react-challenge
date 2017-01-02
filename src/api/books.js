@@ -2,8 +2,8 @@ import axios from 'axios';
 
 
 let api = {
-  getBooks: function (term) {
-    return axios.get(`https://www.googleapis.com/books/v1/volumes?q=${term}`)
+  getBooks: function (term, offset, limit) {
+    return axios.get(`https://www.googleapis.com/books/v1/volumes?q=${term}&&startIndex=${offset}&maxResults=${limit}`)
       .then(function (response) {
         return response;
       })

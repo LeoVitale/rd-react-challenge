@@ -1,12 +1,14 @@
-import './sass/index.scss';
 import React, { Component } from 'react';
+import './sass/index.scss';
 import WebFontLoader from 'webfontloader';
 import api from './api/books.js';
-import BookList from './components/BookList';
+import BooksList from './components/BooksList';
+import BookDetail from './components/BookDetail';
 import Toolbar from 'react-md/lib/Toolbars';
 import Button from 'react-md/lib/Buttons/Button';
 import TextField from 'react-md/lib/TextFields';
 import FontIcon from 'react-md/lib/FontIcons';
+import Drawer from 'react-md/lib/Drawers';
 import base from './api/base';
 
 WebFontLoader.load({
@@ -19,40 +21,52 @@ class App extends Component {
 
   constructor(props) {
     super(props);
+    this.visibilityCount = 0;
   }
 
   state = {
     totalItems: 0,
     books: [],
-    title: 'Resultados Digitais',
-    favorites: {}
+    title: '',
+    favorites: {},
+    visible: false,
+    stats: null,
+    bookDetail: null,
+    offset: 0,
+    limit: 40,
+    term:'tolkien'
   };
 
-  
   componentWillMount() {
-    this.ref = base.syncState('favorites', 
-    {
-      context: this,
-      state: 'favorites'
-    });
+    this.ref = base.syncState('favorites',
+      {
+        context: this,
+        state: 'favorites'
+      });
   }
-  
+
   componentDidMount() {
-    api.getBooks('tolkien').then((response) => {
+    window.addEventListener("scroll", this.handleScroll);
+    const {term, limit, offset} = this.state;
+    api.getBooks(term, offset, limit).then((response) => {
       if (response.data) {
-        this.setState({ totalItems: response.data.totalItems, books: response.data.items, title: 'tolkien' });
+        this.setState({ totalItems: response.data.totalItems, books: response.data.items, title: term });
       }
     });
   }
 
+  componentWillUnmount() {
+    window.removeEventListener("scroll", this.handleScroll);
+  }
+
   addFavorites = (book) => {
-    const favorites = {...this.state.favorites};
+    const favorites = { ...this.state.favorites };
     favorites[book.id] = book;
     this.setState({ favorites });
   }
 
   removeFavorites = (book) => {
-    const favorites = {...this.state.favorites };
+    const favorites = { ...this.state.favorites };
     favorites[book.id] = null;
     this.setState({ favorites });
   }
@@ -60,14 +74,14 @@ class App extends Component {
   renderBooks = () => {
     if (this.state.books.length > 0) {
       return (
-        <BookList 
-        totalItems={this.state.totalItems} 
-        title={this.state.title} 
-        books={this.state.books}
-        favoriteList={this.state.favorites}
-        addFavorites={this.addFavorites}
-        removeFavorites={this.removeFavorites}
-        getDetail={this.getDetail}/>
+        <BooksList
+          totalItems={this.state.totalItems}
+          title={this.state.title}
+          books={this.state.books}
+          favoriteList={this.state.favorites}
+          addFavorites={this.addFavorites}
+          removeFavorites={this.removeFavorites}
+          getDetail={this.getDetail} />
       )
     }
     return (
@@ -77,10 +91,15 @@ class App extends Component {
 
   textSearch = (event) => {
     if (event.keyCode === 13) {
-      let value = event.target.value;
-      api.getBooks(value).then((response) => {
+      let term = event.target.value;
+      api.getBooks(term, 0, this.state.limit).then((response) => {
         if (response.data) {
-          this.setState({ totalItems: response.data.totalItems, books: response.data.items, title: value });
+          console.log(response.data);
+          this.setState({ 
+            totalItems: response.data.totalItems, 
+            books: response.data.items, 
+            title: term, 
+            term: term });
         }
       }).catch(function (error) {
         return error;
@@ -88,21 +107,72 @@ class App extends Component {
     }
   }
 
-  getDetail = (id) => {
-    console.log(id);
-    api.getDetailBook(id).then((response) => {
+  loadMoreBooks = () => {
+    const {term, limit, offset} = this.state;
+    let newOffset =  offset + limit;
+    let newBooks;
+    api.getBooks(term, newOffset, limit).then((response) => {
       if (response.data) {
         console.log(response.data);
+        newBooks = this.state.books.concat(response.data.items);
+        this.setState({ 
+          books: newBooks, 
+          title: term, 
+          term: term,
+          offset: newOffset});
       }
     }).catch(function (error) {
       return error;
     });
   }
 
+  getDetail = (id) => {
+    console.log(id);
+    api.getDetailBook(id).then((response) => {
+      if (response.data) {
+        this.setState({bookDetail: response.data});
+        this.openSideDisplay();
+      }
+    }).catch(function (error) {
+      return error;
+    });
+  }
+
+  closeDrawer = () => {
+    this.setState({ visible: false });
+  }
+
+  openSideDisplay = () => {
+    this.setState({ visible: true });
+  }
+
+  handleVisibility = (visible) => {
+    if (this.visibilityCount < 2) {
+      this.visibilityCount = this.visibilityCount + 1;
+    } else {
+      this.setState({ visible });
+    }
+  }
+
+  handleScroll= () => {
+    const windowHeight = "innerHeight" in window ? window.innerHeight : document.documentElement.offsetHeight;
+    const body = document.body;
+    const html = document.documentElement;
+    const docHeight = Math.max(body.scrollHeight, body.offsetHeight, html.clientHeight,  html.scrollHeight, html.offsetHeight);
+    const windowBottom = windowHeight + window.pageYOffset;
+    if (windowBottom >= docHeight && docHeight !== 0) {
+      this.loadMoreBooks();
+    } else {
+
+    }
+  }
+
   render() {
+    const { visible, stats } = this.state;
     let nav = <Button icon>menu</Button>;
     let title = 'Search Books';
     let actions = <Button icon>search</Button>;
+    let bookDetail;
     let children = (
       <TextField
         className="search-box md-title--toolbar"
@@ -111,8 +181,12 @@ class App extends Component {
         block />
     );
 
+    if(this.state.bookDetail){
+      bookDetail = <BookDetail detailData={this.state.bookDetail} closeDrawer={this.closeDrawer}/>;
+    }
+    
     return (
-      <div className="app">
+      <div className="app" style={{overflow:'hidden'}}>
         <Toolbar
           colored
           fixed
@@ -121,9 +195,16 @@ class App extends Component {
           title={title}>
           {children}
         </Toolbar>
-        
+        <Drawer
+          position="right"
+          onVisibilityToggle={this.handleVisibility}
+          visible={visible}
+          renderNode={this.renderNode}
+          style={{ maxWidth: 450, width: '100%', overflow:'auto' }}
+          >
+          {bookDetail}
+        </Drawer>
         {this.renderBooks()}
-
       </div>
 
     )
