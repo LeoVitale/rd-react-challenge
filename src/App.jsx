@@ -137,6 +137,10 @@ class App extends PureComponent {
     });
   }
 
+  handleToggle = (visible) => {
+    this.setState({ visible });
+  }
+
   closeDrawer = () => {
     this.setState({ visible: false });
   }
@@ -187,7 +191,8 @@ class App extends PureComponent {
         </Toolbar>
         <Drawer
           position="right"
-          defaultVisible={false}
+          onVisibilityToggle={this.handleToggle}
+          type={Drawer.DrawerTypes.TEMPORARY}
           visible={visible}
           style={{ maxWidth: 450, width: '100%', overflow: 'auto' }}
           >
