@@ -5,7 +5,7 @@
   "private": true,
   "author": "",
   "license": "MIT",
-  "repository": "",
+  "repository": "https://github.com/LeoVitale/rd-react-challenge",
   "homepage": "https://leovitale.github.io/rd-react-challenge/",
   "dependencies": {
     "axios": "^0.15.3",

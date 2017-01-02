@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import './sass/index.scss';
 import WebFontLoader from 'webfontloader';
 import api from './api/books.js';
@@ -7,7 +7,6 @@ import BookDetail from './components/BookDetail';
 import Toolbar from 'react-md/lib/Toolbars';
 import Button from 'react-md/lib/Buttons/Button';
 import TextField from 'react-md/lib/TextFields';
-import FontIcon from 'react-md/lib/FontIcons';
 import Drawer from 'react-md/lib/Drawers';
 import base from './api/base';
 
@@ -17,7 +16,7 @@ WebFontLoader.load({
   }
 });
 
-class App extends Component {
+class App extends PureComponent {
 
   constructor(props) {
     super(props);
@@ -34,7 +33,7 @@ class App extends Component {
     bookDetail: null,
     offset: 0,
     limit: 40,
-    term:'tolkien'
+    term: 'tolkien'
   };
 
   componentWillMount() {
@@ -95,11 +94,12 @@ class App extends Component {
       api.getBooks(term, 0, this.state.limit).then((response) => {
         if (response.data) {
           console.log(response.data);
-          this.setState({ 
-            totalItems: response.data.totalItems, 
-            books: response.data.items, 
-            title: term, 
-            term: term });
+          this.setState({
+            totalItems: response.data.totalItems,
+            books: response.data.items,
+            title: term,
+            term: term
+          });
         }
       }).catch(function (error) {
         return error;
@@ -109,17 +109,18 @@ class App extends Component {
 
   loadMoreBooks = () => {
     const {term, limit, offset} = this.state;
-    let newOffset =  offset + limit;
+    let newOffset = offset + limit;
     let newBooks;
     api.getBooks(term, newOffset, limit).then((response) => {
       if (response.data) {
         console.log(response.data);
         newBooks = this.state.books.concat(response.data.items);
-        this.setState({ 
-          books: newBooks, 
-          title: term, 
+        this.setState({
+          books: newBooks,
+          title: term,
           term: term,
-          offset: newOffset});
+          offset: newOffset
+        });
       }
     }).catch(function (error) {
       return error;
@@ -127,10 +128,9 @@ class App extends Component {
   }
 
   getDetail = (id) => {
-    console.log(id);
     api.getDetailBook(id).then((response) => {
       if (response.data) {
-        this.setState({bookDetail: response.data});
+        this.setState({ bookDetail: response.data });
         this.openSideDisplay();
       }
     }).catch(function (error) {
@@ -146,29 +146,20 @@ class App extends Component {
     this.setState({ visible: true });
   }
 
-  handleVisibility = (visible) => {
-    if (this.visibilityCount < 2) {
-      this.visibilityCount = this.visibilityCount + 1;
-    } else {
-      this.setState({ visible });
-    }
-  }
-
-  handleScroll= () => {
+  handleScroll = () => {
     const windowHeight = "innerHeight" in window ? window.innerHeight : document.documentElement.offsetHeight;
     const body = document.body;
     const html = document.documentElement;
-    const docHeight = Math.max(body.scrollHeight, body.offsetHeight, html.clientHeight,  html.scrollHeight, html.offsetHeight);
+    const docHeight = Math.max(body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight);
     const windowBottom = windowHeight + window.pageYOffset;
     if (windowBottom >= docHeight && docHeight !== 0) {
       this.loadMoreBooks();
-    } else {
-
     }
   }
 
   render() {
     const { visible, stats } = this.state;
+    console.log(visible);
     let nav = <Button icon>menu</Button>;
     let title = 'Search Books';
     let actions = <Button icon>search</Button>;
@@ -181,12 +172,12 @@ class App extends Component {
         block />
     );
 
-    if(this.state.bookDetail){
-      bookDetail = <BookDetail detailData={this.state.bookDetail} closeDrawer={this.closeDrawer}/>;
+    if (this.state.bookDetail) {
+      bookDetail = <BookDetail detailData={this.state.bookDetail} closeDrawer={this.closeDrawer} />;
     }
-    
+
     return (
-      <div className="app" style={{overflow:'hidden'}}>
+      <div className="app" style={{ overflow: 'hidden' }}>
         <Toolbar
           colored
           fixed
@@ -197,10 +188,9 @@ class App extends Component {
         </Toolbar>
         <Drawer
           position="right"
-          onVisibilityToggle={this.handleVisibility}
           visible={visible}
           renderNode={this.renderNode}
-          style={{ maxWidth: 450, width: '100%', overflow:'auto' }}
+          style={{ maxWidth: 450, width: '100%', overflow: 'auto' }}
           >
           {bookDetail}
         </Drawer>
