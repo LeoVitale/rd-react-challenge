@@ -30,7 +30,7 @@ class Book extends PureComponent {
     
     const {id, volumeInfo} = this.props.book;
     const image = `https://books.google.com/books/content/images/frontcover/${id}?fife=w350-rw`;
-    console.log(this.props.favorite);
+
     return (
       <div key={id} className="md-cell md-cell--2-desktop md-cell--2-tablet md-cell--12-phone">
         <Card className="book md-block-centered">
@@ -52,9 +52,6 @@ class Book extends PureComponent {
             
           </Media>
           <CardTitle title={volumeInfo.title} subtitle={volumeInfo.title} />
-          <CardText>
-            <p>Texto</p>
-          </CardText>
 
         </Card>
       </div>
