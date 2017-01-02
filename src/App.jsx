@@ -29,7 +29,6 @@ class App extends PureComponent {
     title: '',
     favorites: {},
     visible: false,
-    stats: null,
     bookDetail: null,
     offset: 0,
     limit: 40,
@@ -158,7 +157,7 @@ class App extends PureComponent {
   }
 
   render() {
-    const { visible, stats } = this.state;
+    const { visible } = this.state;
     console.log(visible);
     let nav = <Button icon>menu</Button>;
     let title = 'Search Books';
@@ -188,8 +187,8 @@ class App extends PureComponent {
         </Toolbar>
         <Drawer
           position="right"
+          defaultVisible={false}
           visible={visible}
-          renderNode={this.renderNode}
           style={{ maxWidth: 450, width: '100%', overflow: 'auto' }}
           >
           {bookDetail}

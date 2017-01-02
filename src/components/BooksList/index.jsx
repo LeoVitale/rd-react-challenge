@@ -1,13 +1,8 @@
-import React, { PureComponent, PropTypes } from 'react';
+import React, { PureComponent } from 'react';
 import Book from '../Book';
 import './books-list.scss';
 
-const favoriteList = ['XsJ645BbokAC', 'M7IQ4jTC0esC'];
-
 class BooksList extends PureComponent {
-  constructor(props) {
-    super(props);
-  }
 
   renderBookItem = (book, index) => {
     let favorite = this.props.favoriteList[book.id] !== undefined ? true : false;

@@ -1,4 +1,4 @@
-import React, {PureComponent, PropTypes} from 'react';
+import React, {PureComponent} from 'react';
 import Card from 'react-md/lib/Cards/Card';
 import CardTitle from 'react-md/lib/Cards/CardTitle';
 import Media, { MediaOverlay } from 'react-md/lib/Media';
@@ -8,10 +8,6 @@ import Checkbox from 'react-md/lib/SelectionControls/Checkbox';
 import './book.scss';
 
 class Book extends PureComponent {
-  constructor(props) {
-    super(props);
-
-  }
 
   checkedFavorite = (checked) => {
     const book = {
