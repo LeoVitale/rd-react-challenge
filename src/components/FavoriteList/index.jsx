@@ -1,7 +1,6 @@
 import React, {PureComponent} from 'react';
 import List from 'react-md/lib/Lists/List';
 import ListItem from 'react-md/lib/Lists/ListItem';
-import Button from 'react-md/lib/Buttons/Button';
 import FontIcon from 'react-md/lib/FontIcons';
 import Avatar from 'react-md/lib/Avatars';
 
@@ -23,7 +22,6 @@ class FavoriteList extends PureComponent {
 
   render() {
     const favorites = this.props.favorites;
-    const arrFavorites = Object.keys(favorites).map(this.renderFavorites);
 
     return (
       <div className="md-grid">
