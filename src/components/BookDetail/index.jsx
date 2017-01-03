@@ -9,10 +9,14 @@ class BookDetail extends PureComponent {
   render() {
 
     const {volumeInfo} = this.props.detailData;
-    console.log(this.props.detailData);
     return (
       <div className="book-detail">
-        <Button className="close-btn" icon onClick={() => this.props.closeDrawer()}>close</Button>
+        <CardTitle
+          title="Detalhes"
+          style={{ padding: 16 }}
+          >
+          <Button primary className="close-btn md-cell--right" icon onClick={() => this.props.closeDetailSide()}>close</Button>
+        </CardTitle>
         <div className="">
           <Media aspectRatio="1-1" key="media">
             <img src={volumeInfo.imageLinks.large} role="presentation" />

@@ -30,7 +30,7 @@ class BooksList extends PureComponent {
             <p>{this.props.totalItems} resultados</p>
           </div>
         </div>
-        
+
         <div className="md-grid">
           {books.map((book, index) => {
             return this.renderBookItem(book, index);

@@ -1,14 +1,22 @@
+
 import React, { PureComponent } from 'react';
-import './sass/index.scss';
+
 import WebFontLoader from 'webfontloader';
 import api from './api/books.js';
-import BooksList from './components/BooksList';
-import BookDetail from './components/BookDetail';
+
 import Toolbar from 'react-md/lib/Toolbars';
 import Button from 'react-md/lib/Buttons/Button';
 import TextField from 'react-md/lib/TextFields';
 import Drawer from 'react-md/lib/Drawers';
 import base from './api/base';
+
+import './sass/index.scss';
+import BooksList from './components/BooksList';
+import BookDetail from './components/BookDetail';
+import FavoriteList from './components/FavoriteList';
+import CardTitle from 'react-md/lib/Cards/CardTitle';
+
+
 
 WebFontLoader.load({
   google: {
@@ -21,14 +29,16 @@ class App extends PureComponent {
   constructor(props) {
     super(props);
     this.visibilityCount = 0;
+    this.bodyHTML = document.querySelector('body');
   }
 
   state = {
     totalItems: 0,
     books: [],
     title: '',
-    favorites: {},
+    favorites: [],
     visible: false,
+    visibleFavorites: false,
     bookDetail: null,
     offset: 0,
     limit: 40,
@@ -92,12 +102,12 @@ class App extends PureComponent {
       let term = event.target.value;
       api.getBooks(term, 0, this.state.limit).then((response) => {
         if (response.data) {
-          console.log(response.data);
           this.setState({
             totalItems: response.data.totalItems,
             books: response.data.items,
             title: term,
-            term: term
+            term: term,
+            offset: 0
           });
         }
       }).catch(function (error) {
@@ -112,7 +122,6 @@ class App extends PureComponent {
     let newBooks;
     api.getBooks(term, newOffset, limit).then((response) => {
       if (response.data) {
-        console.log(response.data);
         newBooks = this.state.books.concat(response.data.items);
         this.setState({
           books: newBooks,
@@ -137,16 +146,38 @@ class App extends PureComponent {
     });
   }
 
-  handleToggle = (visible) => {
+  handleDetailToggle = (visible) => {
+    if (!visible) {
+      this.bodyHTML.style.overflow = 'auto';
+    }
     this.setState({ visible });
   }
 
-  closeDrawer = () => {
+  handleFavoritesToggle = (visibleFavorites) => {
+    if (!visibleFavorites) {
+      this.bodyHTML.style.overflow = 'auto';
+    }
+    this.setState({ visibleFavorites });
+  }
+
+  closeDetailSide = () => {
+    this.bodyHTML.style.overflow = 'auto';
     this.setState({ visible: false });
   }
 
   openSideDisplay = () => {
+    this.bodyHTML.style.overflow = 'hidden';
     this.setState({ visible: true });
+  }
+
+  closeFavoritesSide = () => {
+    this.bodyHTML.style.overflow = 'auto';
+    this.setState({ visibleFavorites: false });
+  }
+
+  openFavoritesSide = () => {
+    this.bodyHTML.style.overflow = 'hidden';
+    this.setState({ visibleFavorites: true });
   }
 
   handleScroll = () => {
@@ -161,11 +192,9 @@ class App extends PureComponent {
   }
 
   render() {
-    const { visible } = this.state;
-    console.log(visible);
-    let nav = <Button icon>menu</Button>;
+    const { visible, visibleFavorites } = this.state;
     let title = 'Search Books';
-    let actions = <Button icon>search</Button>;
+    let actions = <Button onClick={() => this.textSearch()} icon>search</Button>;
     let bookDetail;
     let children = (
       <TextField
@@ -176,7 +205,7 @@ class App extends PureComponent {
     );
 
     if (this.state.bookDetail) {
-      bookDetail = <BookDetail detailData={this.state.bookDetail} closeDrawer={this.closeDrawer} />;
+      bookDetail = <BookDetail detailData={this.state.bookDetail} closeDetailSide={this.closeDetailSide} />;
     }
 
     return (
@@ -184,21 +213,40 @@ class App extends PureComponent {
         <Toolbar
           colored
           fixed
-          nav={nav}
           actions={actions}
           title={title}>
           {children}
         </Toolbar>
         <Drawer
           position="right"
-          onVisibilityToggle={this.handleToggle}
+          onVisibilityToggle={this.handleDetailToggle}
           type={Drawer.DrawerTypes.TEMPORARY}
           visible={visible}
           style={{ maxWidth: 450, width: '100%', overflow: 'auto' }}
           >
           {bookDetail}
         </Drawer>
+        <Drawer
+          position="right"
+          onVisibilityToggle={this.handleFavoritesToggle}
+          type={Drawer.DrawerTypes.TEMPORARY}
+          visible={visibleFavorites}
+          style={{ maxWidth: 450, width: '100%', overflow: 'auto' }}
+          >
+          <div className="favorite-list-container">
+            <CardTitle
+              title="Livros Favoritos"
+              style={{ padding: 16 }}
+              >
+              <Button primary className="close-btn md-cell--right" icon onClick={() => this.closeFavoritesSide()}>close</Button>
+            </CardTitle>
+            <FavoriteList favorites={this.state.favorites} removeFavorites={this.removeFavorites}></FavoriteList>
+
+          </div>
+        </Drawer>
+
         {this.renderBooks()}
+        <Button floating fixed secondary onClick={() => this.openFavoritesSide()}>favorite</Button>
       </div>
 
     )
