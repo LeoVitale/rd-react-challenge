@@ -21,4 +21,4 @@
 
 - `npm run clean` will delete built resources.
 
-- `npm run deploy` will deploy build folder to the github.io.
+- `npm run deploy` will deploy 'build' folder to the github.io.
